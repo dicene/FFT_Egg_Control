@@ -14,8 +14,8 @@
   "ReleaseMetadataFileName": "FFT_Egg_Control.ReleaseMetadata.json",
   "PluginData": {},
   "IsUniversalMod": false,
-  "ModDependencies": [ "reloaded.sharedlib.hooks" ],
+  "ModDependencies": [ "reloaded.sharedlib.hooks", "Reloaded.Memory.SigScan" ],
   "OptionalDependencies": [],
   "SupportedAppId": [ "fft_enhanced.exe" ],
-  "ProjectUrl": ""
+  "ProjectUrl": "https://github.com/dicene/FFT_Egg_Control"
 }

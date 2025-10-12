@@ -3,6 +3,7 @@ using FFT_Egg_Control.Template;
 using Reloaded.Hooks.Definitions.X64;
 using Reloaded.Memory.Sigscan;
 using Reloaded.Mod.Interfaces;
+using FFT_Egg_Control.Constants;
 
 #if DEBUG
 using System.Diagnostics;
