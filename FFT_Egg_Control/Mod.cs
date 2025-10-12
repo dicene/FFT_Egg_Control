@@ -1,7 +1,6 @@
 ﻿using FFT_Egg_Control.Configuration;
 using FFT_Egg_Control.Template;
 using Reloaded.Hooks.Definitions.X64;
-using Reloaded.Hooks.ReloadedII.Interfaces;
 using Reloaded.Memory.Sigscan;
 using Reloaded.Mod.Interfaces;
 
@@ -13,48 +12,28 @@ using static FFT_Egg_Control.Constants.Constants;
 
 namespace FFT_Egg_Control
 {
-    /// <summary>
-    /// Your mod logic goes here.
-    /// </summary>
-    public class Mod : ModBase // <= Do not Remove.
+    public class Mod : ModBase
     {
-        /// <summary>
-        /// Provides access to the mod loader API.
-        /// </summary>
         private readonly IModLoader _modLoader;
 
-        /// <summary>
-        /// Provides access to the Reloaded.Hooks API.
-        /// </summary>
-        /// <remarks>This is null if you remove dependency on Reloaded.SharedLib.Hooks in your mod.</remarks>
         private readonly Reloaded.Hooks.ReloadedII.Interfaces.IReloadedHooks? _hooks;
 
-        /// <summary>
-        /// Provides access to the Reloaded logger.
-        /// </summary>
         private readonly ILogger _logger;
 
-        /// <summary>
-        /// Entry point into the mod, instance that created this class.
-        /// </summary>
         private readonly IMod _owner;
 
-        /// <summary>
-        /// Provides access to this mod's configuration.
-        /// </summary>
         private Config _configuration;
 
-        /// <summary>
-        /// The configuration of the currently executing mod.
-        /// </summary>
         private readonly IModConfig _modConfig;
 
         public Dictionary<MonsterID, Func<bool>> MonsterIDToConfigMap;
+
 
         [Function([FunctionAttribute.Register.rcx, FunctionAttribute.Register.rdx, FunctionAttribute.Register.r14], FunctionAttribute.Register.rax, false)]
         private delegate Int64 SpawnCreatureEgg(SpawnType spawnType, int eggID, MonsterID monsterID);
 
         private Reloaded.Hooks.Definitions.IHook<SpawnCreatureEgg> SpawnCreatureEgg_Hook;
+
 
         private Int64 SpawnCreatureEgg_Replacement(SpawnType spawnType, int eggID, MonsterID monsterID)
         {
@@ -72,7 +51,7 @@ namespace FFT_Egg_Control
             {
                 if (_configuration.Logging)
                 {
-                    _logger.WriteLineAsync($"Discarding {monsterID} egg.");
+                    _logger.WriteLineAsync($"[{_modConfig.ModId}] Discarding {monsterID} egg.", Color.Orange);
                 }
 
                 return -1;
@@ -80,11 +59,12 @@ namespace FFT_Egg_Control
 
             if (_configuration.Logging)
             {
-                _logger.WriteLineAsync($"Allowing {monsterID} egg.");
+                _logger.WriteLineAsync($"[{_modConfig.ModId}] Allowing {monsterID} egg.", Color.SkyBlue);
             }
 
             return SpawnCreatureEgg_Hook.OriginalFunction(spawnType, eggID, monsterID);
         }
+
 
         public Mod(ModContext context)
         {
@@ -104,7 +84,7 @@ namespace FFT_Egg_Control
 
             if (!scanResult.Found)
             {
-                _logger.WriteLineAsync($"Failed to find AoB pattern for SpawnCreatureEgg function!", Color.OrangeRed);
+                _logger.WriteLineAsync($"[{_modConfig.ModId}] Failed to find AoB pattern for SpawnCreatureEgg function!", Color.OrangeRed);
                 return;
             }
 
@@ -160,14 +140,22 @@ namespace FFT_Egg_Control
                 [MonsterID.Tiamat] = () => { return _configuration.Allow_Tiamat; },
             };
 
-            SpawnCreatureEgg_Hook = _hooks!.CreateHook<SpawnCreatureEgg>(SpawnCreatureEgg_Replacement, Process.GetCurrentProcess().MainModule.BaseAddress + scanResult.Offset).Activate();
+            var spawnCreatureEgg_address = Process.GetCurrentProcess().MainModule.BaseAddress + scanResult.Offset;
+
+            SpawnCreatureEgg_Hook = _hooks!.CreateHook<SpawnCreatureEgg>(SpawnCreatureEgg_Replacement, spawnCreatureEgg_address).Activate();
+
+            if (!SpawnCreatureEgg_Hook.IsHookEnabled)
+            {
+                _logger.WriteLineAsync($"[{_modConfig.ModId}] Failed to hook SpawnCreatureEgg function at 0x{spawnCreatureEgg_address:X}.", Color.OrangeRed);
+                return;
+            }
+
+            _logger.WriteLineAsync($"[{_modConfig.ModId}] Hooked SpawnCreatureEgg function at 0x{spawnCreatureEgg_address:X}.", Color.LightGreen);
         }
 
         #region Standard Overrides
         public override void ConfigurationUpdated(Config configuration)
         {
-            // Apply settings from configuration.
-            // ... your code here.
             _configuration = configuration;
             _logger.WriteLine($"[{_modConfig.ModId}] Config Updated.");
         }
