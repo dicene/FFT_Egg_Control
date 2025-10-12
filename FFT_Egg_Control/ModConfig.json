@@ -1,0 +1,21 @@
+{
+  "ModId": "FFT_Egg_Control",
+  "ModName": "FFT Egg Control",
+  "ModAuthor": "Dicene",
+  "ModVersion": "1.0.0",
+  "ModDescription": "Enables controlling which monsters (if any) can produce eggs",
+  "ModDll": "FFT_Egg_Control.dll",
+  "ModIcon": "Preview.png",
+  "ModR2RManagedDll32": "x86/FFT_Egg_Control.dll",
+  "ModR2RManagedDll64": "x64/FFT_Egg_Control.dll",
+  "ModNativeDll32": "",
+  "ModNativeDll64": "",
+  "IsLibrary": false,
+  "ReleaseMetadataFileName": "FFT_Egg_Control.ReleaseMetadata.json",
+  "PluginData": {},
+  "IsUniversalMod": false,
+  "ModDependencies": [ "reloaded.sharedlib.hooks" ],
+  "OptionalDependencies": [],
+  "SupportedAppId": [ "fft_enhanced.exe" ],
+  "ProjectUrl": ""
+}
