@@ -1,14 +1,12 @@
 ﻿using FFT_Egg_Control.Configuration;
 using FFT_Egg_Control.Template;
+using Reloaded.Hooks.Definitions;
 using Reloaded.Hooks.Definitions.X64;
-using Reloaded.Mod.Interfaces;
 using Reloaded.Memory.SigScan.ReloadedII.Interfaces;
-
-#if DEBUG
+using Reloaded.Mod.Interfaces;
 using System.Diagnostics;
 using System.Drawing;
 using static FFT_Egg_Control.Constants.Constants;
-#endif
 
 namespace FFT_Egg_Control
 {
@@ -31,14 +29,14 @@ namespace FFT_Egg_Control
         [Function([FunctionAttribute.Register.rcx, FunctionAttribute.Register.rdx, FunctionAttribute.Register.r14], FunctionAttribute.Register.rax, false)]
         private delegate Int64 SpawnCreatureEgg(SpawnType spawnType, int eggID, MonsterID monsterID);
 
-        private Reloaded.Hooks.Definitions.IHook<SpawnCreatureEgg> SpawnCreatureEgg_Hook;
+        private IHook<SpawnCreatureEgg> SpawnCreatureEgg_Hook;
 
 
         private Int64 SpawnCreatureEgg_Replacement(SpawnType spawnType, int eggID, MonsterID monsterID)
         {
             var blockSpawn = false;
 
-            if (spawnType == SpawnType.Generic_Monster && _configuration.Enabled && MonsterIDToConfigMap.ContainsKey(monsterID) && !MonsterIDToConfigMap[monsterID]())
+            if (spawnType == SpawnType.Generic_Monster && _configuration.Enabled && MonsterIDToConfigMap.TryGetValue(monsterID, out var check) && !check())
             {
                 if (_configuration.Enabled)
                 {
@@ -75,7 +73,7 @@ namespace FFT_Egg_Control
             _modConfig = context.ModConfig;
 
 #if DEBUG
-            // Debugger.Launch();
+
 #endif
             var startupScannerController = _modLoader.GetController<IStartupScanner>();
             if (startupScannerController == null || !startupScannerController.TryGetTarget(out var startupScanner))
@@ -84,8 +82,7 @@ namespace FFT_Egg_Control
 
                 return;
             }
-
-            startupScanner.AddMainModuleScan("40 53 48 83 ec 20 41 89 c8 e8 ?? ?? ?? ?? 48 63 d8 85 c0 78 46", result => // 0x14DE9E013 in Original release of FFTIC
+            startupScanner.AddMainModuleScan("40 53 48 83 EC ?? 41 89 C8 E8 ?? ?? ?? ?? 48 63 D8 85 C0 78", result => // 0x14DE9E013 in 1.2.0, 0x14DAD771C in 1.3.0
             {
                 if (!result.Found)
                 {
