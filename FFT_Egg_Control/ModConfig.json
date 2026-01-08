@@ -48,11 +48,14 @@
   "IsUniversalMod": false,
   "ModDependencies": [
     "Reloaded.Memory.SigScan.ReloadedII",
-    "reloaded.sharedlib.hooks"
+    "reloaded.sharedlib.hooks",
+    "SharedScans.Reloaded",
+    "ff16.utility.framework"
   ],
   "OptionalDependencies": [],
   "SupportedAppId": [
-    "fft_enhanced.exe"
+    "fft_enhanced.exe",
+    "fft_enhanced - 1.2.0.exe"
   ],
   "ProjectUrl": "https://github.com/dicene/FFT_Egg_Control"
 }

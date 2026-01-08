@@ -43,11 +43,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FF16Framework.Interfaces" Version="1.2.0" />
     <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.3" />
+    <PackageReference Include="NenTools.ImGui.Interfaces" Version="1.0.2" />
     <PackageReference Include="Reloaded.Memory" Version="9.4.3" />
     <PackageReference Include="Reloaded.Memory.SigScan.ReloadedII.Interfaces" Version="1.2.0" />
     <PackageReference Include="Reloaded.Mod.Interfaces" Version="2.4.0" ExcludeAssets="runtime" />
     <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.9.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.1" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;C:\Users\Thoth\Documents\Software\Reloaded II\Reloaded-II.exe&quot; --launch &quot;C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY TACTICS - The Ivalice Chronicles\FFT_enhanced.exe&quot;" />
+  </Target>
 
 </Project>
